@@ -8,6 +8,7 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -48,6 +49,15 @@ export default function TabLayout() {
                 title: 'Pet',
                   tabBarIcon: ({ color }) => (
                       <FontAwesome name="paw" size={28} color={color} />
+                    ),
+              }}
+            />
+<Tabs.Screen
+              name="AnimalsListsScreen"
+              options={{
+                title: 'Pet List',
+                  tabBarIcon: ({ color }) => (
+                      <FontAwesome5 name="horse" size={28} color={color} />
                     ),
               }}
             />
