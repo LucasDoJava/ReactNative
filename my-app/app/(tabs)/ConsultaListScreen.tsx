@@ -1,32 +1,32 @@
 import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 
 import { ThemedView } from '@/components/ThemedView';
-import Animais from '@/components/animais/Animais';
+import Consulta from '@/components/consultas/Consulta';
 import MyScrollView from '@/components/MyScrollView';
 import { useState } from 'react';
-import { IAnimals } from '@/interfaces/IAnimals'; 
-import AnimalsModal from '@/components/modals/AnimalsModal';
+import { IConsultas } from '@/interfaces/IConsultas'; 
+import ConsultaModal from '@/components/modals/ConsultaModal';
 
 export default function AnimalsListScreen() {
-  const [animals, setAnimals] = useState<IAnimals[]>([]);
+  const [consultas, setconsultas] = useState<IConsultas[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  const onAdd = (name: string, race: string, age: number, peso: number) => {
-    const newAnimal: IAnimals = {
+  const onAdd = (animal: string, horaEntrada: string, horaSaida: string, diagnostico: string, valorConsulta: number) => {
+    const newConsulta: IConsultas = {
       id: Math.random() * 1000,
-      name: name,
-      race: race,
-      age: age,
-      peso: peso,
-      queries: 0
+      animal: animal,
+      horaEntrada: horaEntrada,
+      horaSaida: horaSaida,
+      diagnostico: diagnostico,
+      valorConsulta: valorConsulta
     };
 
-    const updatedAnimals: IAnimals[] = [
-      ...animals,
-      newAnimal
+    const updateConsultas: IConsultas[] = [
+      ...consultas,
+      newConsulta
     ];
 
-    setAnimals(updatedAnimals);
+    setconsultas(updateConsultas);
     setModalVisible(false);
   };
 
@@ -47,18 +47,19 @@ export default function AnimalsListScreen() {
       </ThemedView>
 
       <ThemedView style={styles.container}>
-        {animals.map(animal => (
-          <Animais
-            key={animal.id}
-            name={animal.name}
-            race={animal.race}
-            age={animal.age}
-            peso={animal.peso}
+        {consultas.map(consul => (
+          <Consulta
+            key={consul.id}
+            animal={consul.animal}
+            horaEntrada={consul.horaEntrada}
+            horaSaida={consul.horaSaida}
+            diagnostico={consul.diagnostico}
+            valorConsulta={consul.valorConsulta}
           />
         ))}
       </ThemedView>
 
-      <AnimalsModal
+      <ConsultaModal
         visible={modalVisible}
         onCancel={closeModal}
         onAdd={onAdd}

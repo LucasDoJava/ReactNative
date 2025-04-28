@@ -61,6 +61,15 @@ export default function TabLayout() {
                     ),
               }}
             />
+            <Tabs.Screen
+              name="ConsultaListsScreen"
+              options={{
+                title: 'Consulta List',
+                  tabBarIcon: ({ color }) => (
+                      <FontAwesome name="calendar" size={28} color={color} />
+                    ),
+              }}
+            />
     </Tabs>
   );
 }
