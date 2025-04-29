@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { useState } from "react";
+import { IConsultas } from "@/interfaces/IConsultas";
 
 export type ConsultaModalProps = {
     visible: boolean;
@@ -8,23 +9,47 @@ export type ConsultaModalProps = {
         horaEntrada: string,
         horaSaida: string,
         diagnostico: string,
-        valorConsulta: number) => void;
+        valorConsulta: number,
+        id: number) => void;
     onCancel: () => void;
+    onDelete: (id: number) => void;
+    consultas ? : IConsultas
 };
 
-export default function ConsultaModal({visible, onAdd, onCancel}: ConsultaModalProps) {
-    const [animal, setAnimal] = useState('');
+export default function ConsultaModal({visible, onAdd, onCancel, onDelete, consultas}: ConsultaModalProps) {
+    const [animal, setAnimal] = useState<string>('');
    
-    const [horaEntrada, setHoraEntrada] = useState('');
+    const [horaEntrada, setHoraEntrada] = useState<string>('');
    
-    const [horaSaida, setHoraSaida] = useState('');
+    const [horaSaida, setHoraSaida] = useState<string>('');
     
-    const [diagnostico, setDiagnostico] = useState('');
+    const [diagnostico, setDiagnostico] = useState<string>('');
 
-    const [valorConsulta, setValorConuslta] = useState('');
+    const [valorConsulta, setValorConuslta] = useState<number>();
+
+     const [id, setId] = useState<number>(0);
+
+      useEffect(() => {
+             if (consultas){
+                 setAnimal(consultas.animal);
+                 setHoraEntrada(consultas.horaEntrada);
+                 setHoraSaida(consultas.horaSaida);
+                 setDiagnostico(consultas.diagnostico);
+                 setValorConuslta(consultas.valorConsulta);
+                 setId(consultas.id);
+             }else{
+                setAnimal('');
+                setHoraEntrada('');
+                setHoraSaida('');
+                setDiagnostico('');
+                 setValorConuslta(0);
+                 setId(0);
+             }
+         }, [consultas]
+         )
 
     return (
-        <Modal visible={visible} animationType="fade" transparent={true} onRequestClose={onCancel}>
+        <Modal visible={visible} animationType="fade" transparent={true} onRequestClose={() => {}}>
             <View style={styles.container}>
                 <View style={styles.boxContainer}>
                     <TextInput
@@ -54,20 +79,25 @@ export default function ConsultaModal({visible, onAdd, onCancel}: ConsultaModalP
                     <TextInput
                         style={styles.boxInput}
                         placeholder="valor da Consulta"
-                        value={valorConsulta}
-                        onChangeText={text => setValorConuslta(text)}
+                        value={valorConsulta!== undefined ? valorConsulta.toString() : ''}
+                        onChangeText={text => setValorConuslta(Number(text))}
                         keyboardType="numeric"
                     />
     
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.buttonAdd} onPress={() => onAdd(animal, horaEntrada, horaSaida, diagnostico, parseInt(valorConsulta))}>
+                        <TouchableOpacity style={styles.buttonAdd} onPress={() => onAdd(animal, horaEntrada, horaSaida, diagnostico, valorConsulta!, id)}>
                             <Text style={styles.buttonText}>
                                 Add
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttonCancel} onPress={onCancel}>
+                        <TouchableOpacity style={styles.buttonCancel} onPress={() => onCancel()}>
                             <Text style={styles.buttonText}>
                                 Cancel
+                            </Text>
+                        </TouchableOpacity>
+                         <TouchableOpacity style={styles.buttonCancel} onPress={() => onDelete(id)} disabled={id <= 0}>
+                            <Text style={styles.buttonText}>
+                                Deletar
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -114,6 +144,15 @@ const styles = StyleSheet.create ({
         margin: 10,
         padding: 20,
         elevation: 3,
+    },
+    buttonDelete:{
+        backgroundColor: 'red',
+        borderRadius: 5,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+        padding: 20,
     },
     buttonContainer: {
         flexDirection: 'row',

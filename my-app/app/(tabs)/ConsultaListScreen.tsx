@@ -10,29 +10,65 @@ import ConsultaModal from '@/components/modals/ConsultaModal';
 export default function AnimalsListScreen() {
   const [consultas, setconsultas] = useState<IConsultas[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectConsulta, setSelectConsulta] = useState<IConsultas>();
 
-  const onAdd = (animal: string, horaEntrada: string, horaSaida: string, diagnostico: string, valorConsulta: number) => {
-    const newConsulta: IConsultas = {
-      id: Math.random() * 1000,
-      animal: animal,
-      horaEntrada: horaEntrada,
-      horaSaida: horaSaida,
-      diagnostico: diagnostico,
-      valorConsulta: valorConsulta
-    };
-
-    const updateConsultas: IConsultas[] = [
-      ...consultas,
-      newConsulta
-    ];
-
-    setconsultas(updateConsultas);
+  const onAdd = (animal: string, horaEntrada: string, horaSaida: string, diagnostico: string, valorConsulta: number, id?: number) => {
+    
+    if (!id || id <= 0) {
+      const newConsulta = {
+          id: Math.random() * 1000,
+          animal: animal,
+          horaEntrada: horaEntrada,
+          horaSaida: horaSaida,
+          diagnostico: diagnostico,
+          valorConsulta: valorConsulta
+      };
+  
+      const updateConsultas = [
+          ...consultas,
+          newConsulta
+      ];
+  
+      setconsultas(updateConsultas);
+  } else {
+      consultas.forEach(consulta => {
+          if (consulta.id === id) {
+              consulta.animal = animal;
+              consulta.horaEntrada = horaEntrada;
+              consulta.horaSaida = horaSaida;
+              consulta.diagnostico = diagnostico;
+              consulta.valorConsulta = valorConsulta;
+          }
+      });
+  }
+    
     setModalVisible(false);
   };
 
+   const onDelete = (id: number) => {
+      const updateConsultas: Array<IConsultas> = [];
+  
+      for (let index = 0; index < consultas.length; index++) {
+          const consulta = consultas[index];
+  
+          if (consulta.id !== id) {
+              updateConsultas.push(consulta);
+          }
+      }
+  
+      setconsultas(updateConsultas);
+      setModalVisible(false)
+  };
+
   const openModal = () => {
+    setSelectConsulta(undefined);
     setModalVisible(true);
   };
+
+  const openEditModal = (selectConsulta: IConsultas) => {
+      setSelectConsulta(selectConsulta)
+      setModalVisible(true);
+    }
 
   const closeModal = () => {
     setModalVisible(false);
@@ -45,9 +81,10 @@ export default function AnimalsListScreen() {
     <Text style={styles.headerButton}>+</Text>
   </TouchableOpacity>
       </ThemedView>
-
       <ThemedView style={styles.container}>
-        {consultas.map(consul => (
+
+        {consultas.map(consul => 
+         <TouchableOpacity onPress={() => openEditModal(consul)}>
           <Consulta
             key={consul.id}
             animal={consul.animal}
@@ -56,13 +93,16 @@ export default function AnimalsListScreen() {
             diagnostico={consul.diagnostico}
             valorConsulta={consul.valorConsulta}
           />
-        ))}
+          </TouchableOpacity>
+        )}
       </ThemedView>
 
       <ConsultaModal
         visible={modalVisible}
         onCancel={closeModal}
         onAdd={onAdd}
+        onDelete={onDelete}
+        consultas= {selectConsulta}
       />
     </MyScrollView>
   );
