@@ -70,6 +70,15 @@ export default function TabLayout() {
                     ),
               }}
             />
+            <Tabs.Screen
+              name="TelaCreateScreen"
+              options={{
+                title: 'CreateList',
+                  tabBarIcon: ({ color }) => (
+                      <FontAwesome name="calendar" size={28} color={color} />
+                    ),
+              }}
+            />
     </Tabs>
   );
 }
