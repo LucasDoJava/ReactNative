@@ -3,18 +3,18 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export type AnimalsProps = {
     name: string;
-    race: string;
+    animalbreed: string;
     age: number;
     peso: number;
     };
 
-    export default function Animais({name, race, age, peso}: AnimalsProps) {
+    export default function Animais({name, animalbreed, age, peso}: AnimalsProps) {
         
         return(
             <View style= {styles.box}>
                 <Text style={styles.name}>{name}</Text>
                 
-                <Text style={styles.race}>{race}</Text>
+                <Text style={styles.animalbreed}>{animalbreed}</Text>
                 
                 <Text style={styles.age}>{age}</Text>
                 
@@ -37,7 +37,7 @@ export type AnimalsProps = {
             fontSize: 20,
             fontWeight: 'bold',
         },
-        race: {
+        animalbreed: {
             fontSize: 20,
             fontWeight: 'bold',
         },

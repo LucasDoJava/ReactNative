@@ -42,14 +42,14 @@ export default function ConsultaModal({visible, onAdd, onCancel, onDelete, consu
                 setHoraEntrada('');
                 setHoraSaida('');
                 setDiagnostico('');
-                 setValorConuslta(undefined);
+                 setValorConuslta(0);
                  setId(0);
              }
          }, [consultas]
          )
 
     return (
-        <Modal visible={visible} animationType="fade" transparent={true} onRequestClose={() => {}}>
+    
             <View style={styles.container}>
                 <View style={styles.boxContainer}>
                     <TextInput
@@ -78,11 +78,12 @@ export default function ConsultaModal({visible, onAdd, onCancel, onDelete, consu
                     />
                     <TextInput
                         style={styles.boxInput}
-                        placeholder="Valor da Consulta"
+                        placeholder="valor da Consulta"
                         value={valorConsulta!== undefined ? valorConsulta.toString() : ''}
                         onChangeText={text => setValorConuslta(Number(text))}
                         keyboardType="numeric"
                     />
+                     </View>
     
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.buttonAdd} onPress={() => onAdd(animal, horaEntrada, horaSaida, diagnostico, valorConsulta!, id)}>
@@ -95,27 +96,26 @@ export default function ConsultaModal({visible, onAdd, onCancel, onDelete, consu
                                 Cancel
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttonDelete} onPress={() => onDelete(id)} disabled={id <= 0}>
-    <Text style={styles.buttonText}>
-        Deletar
-    </Text>
-</TouchableOpacity>
+                           <TouchableOpacity style={styles.buttonDelete} onPress={() => onDelete(id)} disabled={id <= 0}>
+                            <Text style={styles.buttonText}>
+                                Deletar
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
-            </View>
-        </Modal>
+    
     );
 }
 
 const styles = StyleSheet.create ({
     container: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display:'flex',
+        backgroundColor: 'white',
         alignContent: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         flex: 1
     },
     boxContainer: {
-        backgroundColor: '#FFF',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',

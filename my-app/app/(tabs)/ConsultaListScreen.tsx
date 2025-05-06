@@ -3,14 +3,54 @@ import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import Consulta from '@/components/consultas/Consulta';
 import MyScrollView from '@/components/MyScrollView';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IConsultas } from '@/interfaces/IConsultas'; 
 import ConsultaModal from '@/components/modals/ConsultaModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Location from 'expo-location';
+
 
 export default function AnimalsListScreen() {
   const [consultas, setconsultas] = useState<IConsultas[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectConsulta, setSelectConsulta] = useState<IConsultas>();
+
+  const [location, setLocation] = useState({});
+const [errorMsg, setErrorMsg] = useState('');
+
+useEffect(() => {
+    async function getData() {
+      try{
+        const data = await AsyncStorage.getItem("@MyApp:petShop");
+        const consultasData = data != null ? JSON.parse(data) : [];
+        setconsultas(consultasData)
+      }catch (e){
+        console.error("Erro ao recuperar dados:", e);
+    }
+  }
+  getData()
+  }, [])
+
+  useEffect(() => {
+    (async() => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if ( status !== 'granted'){
+          setErrorMsg('Permission to access location was denied');
+          return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = 'Waiting...';
+  if (errorMsg){
+    text = errorMsg;
+  } else if (location){
+    text = JSON.stringify(location);
+  }
+
 
   const onAdd = (animal: string, horaEntrada: string, horaSaida: string, diagnostico: string, valorConsulta: number, id?: number) => {
     
@@ -30,6 +70,7 @@ export default function AnimalsListScreen() {
       ];
   
       setconsultas(updateConsultas);
+      AsyncStorage.setItem("@MyApp:petShop", JSON.stringify(updateConsultas))
   } else {
       consultas.forEach(consulta => {
           if (consulta.id === id) {
@@ -40,6 +81,7 @@ export default function AnimalsListScreen() {
               consulta.valorConsulta = valorConsulta;
           }
       });
+      AsyncStorage.setItem("@MyApp:petShop", JSON.stringify(consultas))
   }
     
     setModalVisible(false);
@@ -57,6 +99,7 @@ export default function AnimalsListScreen() {
       }
   
       setconsultas(updateConsultas);
+      AsyncStorage.setItem("@MyApp:petShop", JSON.stringify(updateConsultas))
       setModalVisible(false)
   };
 
@@ -80,6 +123,7 @@ export default function AnimalsListScreen() {
   <TouchableOpacity style={styles.addButton} onPress={openModal}>
     <Text style={styles.headerButton}>+</Text>
   </TouchableOpacity>
+   <Text style={styles.locationText}>{text}</Text>
       </ThemedView>
       <ThemedView style={styles.container}>
 
@@ -153,4 +197,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  locationText: {
+    alignSelf: 'flex-start', 
+    marginTop: 5, 
+    color: '#FFF', 
+},
 });

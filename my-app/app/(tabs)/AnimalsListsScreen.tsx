@@ -3,22 +3,61 @@ import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import Animais from '@/components/animais/Animais';
 import MyScrollView from '@/components/MyScrollView';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IAnimals } from '@/interfaces/IAnimals'; 
 import AnimalsModal from '@/components/modals/AnimalsModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Location from 'expo-location';
 
 export default function AnimalsListScreen() {
   const [animals, setAnimals] = useState<IAnimals[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedAnimal, setSelectAnimal] = useState<IAnimals>();
 
-  const onAdd = (name: string, race: string, age: number, peso: number, id?: number) => {
+  const [location, setLocation] = useState({});
+  const [errorMsg, setErrorMsg] = useState('');
+
+  useEffect(() => {
+    async function getData() {
+      try{
+        const data = await AsyncStorage.getItem("@MyApp:petShop");
+        const animaisData = data != null ? JSON.parse(data) : [];
+        setAnimals(animaisData)
+      }catch (e){
+        console.error("Erro ao recuperar dados:", e);
+    }
+  }
+  getData()
+  }, [])
+
+  useEffect(() => {
+    (async() => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if ( status !== 'granted'){
+          setErrorMsg('Permission to access location was denied');
+          return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = 'Waiting...';
+  if (errorMsg){
+    text = errorMsg;
+  } else if (location){
+    text = JSON.stringify(location);
+  }
+
+
+  const onAdd = (name: string, animalbreed: string, age: number, peso: number, id?: number) => {
 
     if(!id || id <= 0){
       const newAnimal: IAnimals = {
         id: Math.random() * 1000,
       name: name,
-      race: race,
+      animalbreed: animalbreed,
       age: age,
       peso: peso,
       queries: 0
@@ -31,15 +70,18 @@ export default function AnimalsListScreen() {
     ];
 
     setAnimals(updatedAnimals);
+    AsyncStorage.setItem("@MyApp:petShop", JSON.stringify(updatedAnimals))
   }else{
     animals.forEach(animal => {
       if(animal.id == id){
         animal.name = name;
-        animal.race = race;
+        animal.animalbreed = animalbreed;
         animal.age = age;
         animal.peso = peso;
       }
     });
+
+    AsyncStorage.setItem("@MyApp:petShop", JSON.stringify(animals))
   }
     
     setModalVisible(false);
@@ -57,6 +99,7 @@ export default function AnimalsListScreen() {
     }
 
     setAnimals(updatedAnimals);
+    AsyncStorage.setItem("@MyApp:petShop", JSON.stringify(updatedAnimals))
     setModalVisible(false)
 };
 
@@ -80,6 +123,7 @@ export default function AnimalsListScreen() {
   <TouchableOpacity style={styles.addButton} onPress={openModal}>
     <Text style={styles.headerButton}>+</Text>
   </TouchableOpacity>
+  <Text style={styles.locationText}>{text}</Text>
       </ThemedView>
   <ThemedView style={styles.container}>
 
@@ -88,7 +132,7 @@ export default function AnimalsListScreen() {
              <Animais
             key={animal.id}
             name={animal.name}
-            race={animal.race}
+            animalbreed={animal.animalbreed}
             age={animal.age}
             peso={animal.peso}
           />
@@ -152,4 +196,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  locationText: {
+    alignSelf: 'flex-start', 
+    marginTop: 5, 
+    color: '#FFF', 
+},
 });

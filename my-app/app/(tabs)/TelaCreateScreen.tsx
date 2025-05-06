@@ -86,11 +86,11 @@ export default function AnimalsModal({visible, onAdd, onCancel, onDelete ,animai
                                 Cancel
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttonCancel} onPress={() => onDelete(id)} disabled={id <= 0}>
-                            <Text style={styles.buttonText}>
-                                Deletar
-                            </Text>
-                        </TouchableOpacity>
+                          <TouchableOpacity style={styles.buttonDelete} onPress={() => onDelete(id)} disabled={id <= 0}>
+                           <Text style={styles.buttonText}>
+                               Deletar
+                           </Text>
+                       </TouchableOpacity>
                     </View>
             </View>
         
@@ -99,6 +99,7 @@ export default function AnimalsModal({visible, onAdd, onCancel, onDelete ,animai
 
 const styles = StyleSheet.create ({
     container: {
+        backgroundColor: 'white',
         display:'flex',
         alignContent: 'center',
         justifyContent: 'space-between',
@@ -135,7 +136,7 @@ const styles = StyleSheet.create ({
         elevation: 3,
     },
     buttonDelete:{
-        backgroundColor: 'red',
+        backgroundColor: 'orange',
         borderRadius: 5,
         flex: 1,
         justifyContent: 'center',
@@ -149,7 +150,6 @@ const styles = StyleSheet.create ({
         height: 70,
     },
     boxInput: {
-        backgroundColor: 'gray',
         height: 40,
         borderRadius: 5,
         alignSelf: 'stretch',

@@ -57,7 +57,7 @@ export default function TabLayout() {
               options={{
                 title: 'Pet List',
                   tabBarIcon: ({ color }) => (
-                      <FontAwesome5 name="horse" size={28} color={color} />
+                      <FontAwesome5 name="cat" size={28} color={color} />
                     ),
               }}
             />
@@ -73,9 +73,18 @@ export default function TabLayout() {
             <Tabs.Screen
               name="TelaCreateScreen"
               options={{
-                title: 'CreateList',
+                title: 'Tela Pet List',
                   tabBarIcon: ({ color }) => (
-                      <FontAwesome name="calendar" size={28} color={color} />
+                      <FontAwesome5 name="crow" size={28} color={color} />
+                    ),
+              }}
+            />
+            <Tabs.Screen
+              name="ConsultaTela"
+              options={{
+                title: 'Tela Consulta List',
+                  tabBarIcon: ({ color }) => (
+                      <FontAwesome5 name="newspaper" size={28} color={color} />
                     ),
               }}
             />
