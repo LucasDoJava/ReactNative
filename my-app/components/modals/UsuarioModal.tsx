@@ -1,82 +1,57 @@
 import React, { useEffect } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { useState } from "react";
-import { IAnimals } from "@/interfaces/IAnimals";
+import { IUsuario } from "@/interfaces/IUsuario";
 
-export type AnimalsModalProps = {
+export type UsuarioModalProps = {
     visible: boolean;
-    onAdd: (name: string,
-        animalbreed: string,
-        age: number,
-        peso: number,
+    onAdd: (email: string,
+        senha: string,
         id: number) => void;
     onCancel: () => void;
     onDelete: (id: number) => void;
-    animais? : IAnimals
+    usuarios? : IUsuario
 };
 
-export default function AnimalsModal({visible, onAdd, onCancel, onDelete ,animais}: AnimalsModalProps) {
-    const [name, setName] = useState<string>('');
+export default function AnimalsModal({visible, onAdd, onCancel, onDelete ,usuarios}: UsuarioModalProps) {
+    const [email, setEmail] = useState<string>('');
    
-    const [ animalbreed, setanimalbreed] = useState<string>('');
-   
-    const [age, setAge] = useState<number>();
-    
-    const [peso, setPeso] = useState<number>();
+    const [senha, setSenha] = useState<string>('');
 
     const [id, setId] = useState<number>(0);
 
     useEffect(() => {
-        if (animais){
-            setName(animais.name);
-            setanimalbreed(animais.animalbreed);
-            setAge(animais.age);
-            setPeso(animais.peso);
-            setId(animais.id);
+        if (usuarios){
+            setEmail(usuarios.email);
+            setSenha(usuarios.senha);
+            setId(usuarios.id);
         }else{
-            setName('');
-            setanimalbreed('');
-            setAge(0);
-            setPeso(0);
+            setEmail('');
+            setSenha('');
             setId(0);
         }
-    }, [animais]
+    }, [usuarios]
     )
 
     return (
-        
+        <Modal visible={visible} animationType="fade" transparent={true} onRequestClose={() => {}}>
             <View style={styles.container}>
                 <View style={styles.boxContainer}>
                     <TextInput
                         style={styles.boxInput}
-                        placeholder="Name"
-                        value={name}
-                        onChangeText={text => setName(text)}
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={text => setEmail(text)}
                     />
                     <TextInput
                         style={styles.boxInput}
-                        placeholder=" Animal breed"
-                        value={animalbreed}
-                        onChangeText={text => setanimalbreed(text)}
+                        placeholder="Senha"
+                        value={senha}
+                        onChangeText={text => setSenha(text)}
                     />
-                    <TextInput
-                        style={styles.boxInput}
-                        placeholder="Age"
-                        value={age !== undefined ? age.toString() : ''}
-                        onChangeText={text => setAge(Number(text))}
-                        keyboardType="numeric"
-                    />
-                    <TextInput
-                        style={styles.boxInput}
-                        placeholder="Peso"
-                        value={peso !== undefined ? peso.toString() : ''}
-                        onChangeText={text => setPeso(Number(text))}
-                        keyboardType="numeric"
-                    />
-                    </View>
-    
+                    
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.buttonAdd} onPress={() => onAdd(name, animalbreed, age!, peso!, id)}>
+                        <TouchableOpacity style={styles.buttonAdd} onPress={() => onAdd(email, senha, id)}>
                             <Text style={styles.buttonText}>
                                 Add
                             </Text>
@@ -86,26 +61,27 @@ export default function AnimalsModal({visible, onAdd, onCancel, onDelete ,animai
                                 Cancel
                             </Text>
                         </TouchableOpacity>
-                          <TouchableOpacity style={styles.buttonDelete} onPress={() => onDelete(id)} disabled={id <= 0}>
-                           <Text style={styles.buttonText}>
-                               Deletar
-                           </Text>
-                       </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttonDelete} onPress={() => onDelete(id)} disabled={id <= 0}>
+    <Text style={styles.buttonText}>
+        Deletar
+    </Text>
+</TouchableOpacity>
                     </View>
+                </View>
             </View>
-        
+        </Modal>
     );
 }
 
 const styles = StyleSheet.create ({
     container: {
-        backgroundColor: 'white',
-        display:'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         alignContent: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         flex: 1
     },
     boxContainer: {
+        backgroundColor: '#FFF',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
@@ -154,8 +130,6 @@ const styles = StyleSheet.create ({
         borderRadius: 5,
         alignSelf: 'stretch',
         margin: 5,
-        paddingHorizontal: 5,
-        marginBottom:30,
-        display: 'flex'
+        paddingHorizontal: 5
     },
 });
