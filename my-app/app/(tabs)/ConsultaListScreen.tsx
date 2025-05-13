@@ -8,9 +8,10 @@ import { IConsultas } from '@/interfaces/IConsultas';
 import ConsultaModal from '@/components/modals/ConsultaModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
+import { router } from 'expo-router'
 
 
-export default function AnimalsListScreen() {
+export default function ConsultasListScreen() {
   const [consultas, setconsultas] = useState<IConsultas[]>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectConsulta, setSelectConsulta] = useState<IConsultas>();
@@ -113,6 +114,10 @@ useEffect(() => {
       setModalVisible(true);
     }
 
+const navigateToDetails = (selectConsulta: IConsultas) =>{
+    router.push({ pathname: '/Screens/ConsultasDatailScreen' , params: {consultasId: selectConsulta.id}})
+  }
+
   const closeModal = () => {
     setModalVisible(false);
   };
@@ -128,7 +133,7 @@ useEffect(() => {
       <ThemedView style={styles.container}>
 
         {consultas.map(consul => 
-         <TouchableOpacity onPress={() => openEditModal(consul)}>
+         <TouchableOpacity onPress={() => navigateToDetails(consul)}>
           <Consulta
             key={consul.id}
             animal={consul.animal}

@@ -8,6 +8,7 @@ import { IUsuario } from '@/interfaces/IUsuario';
 import UsuarioModal from '@/components/modals/UsuarioModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
+import { router } from 'expo-router'
 
 export default function UsuarioListScreen() {
   const [usuario, setUsuario] = useState<IUsuario[]>([]);
@@ -108,6 +109,10 @@ export default function UsuarioListScreen() {
     setModalVisible(true);
   }
 
+  const navigateToDetails = (selectedUsuario: IUsuario) =>{
+      router.push({ pathname: '/Screens/UsuariosDatailScreen' , params: {usuarioId: selectedUsuario.id}})
+    }
+
   const closeModal = () => {
     setModalVisible(false);
   };
@@ -123,7 +128,7 @@ export default function UsuarioListScreen() {
   <ThemedView style={styles.container}>
 
         {usuario.map(usuario => 
-          <TouchableOpacity onPress={() => openEditModal(usuario)}>
+          <TouchableOpacity onPress={() => navigateToDetails(usuario)}>
              <Usuario
             key={usuario.id}
             email={usuario.email}

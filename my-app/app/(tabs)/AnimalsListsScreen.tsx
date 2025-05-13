@@ -8,6 +8,7 @@ import { IAnimals } from '@/interfaces/IAnimals';
 import AnimalsModal from '@/components/modals/AnimalsModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
+import { router } from 'expo-router'
 
 export default function AnimalsListScreen() {
   const [animals, setAnimals] = useState<IAnimals[]>([]);
@@ -113,6 +114,10 @@ export default function AnimalsListScreen() {
     setModalVisible(true);
   }
 
+  const navigateToDetails = (selectedAnimal: IAnimals) =>{
+    router.push({ pathname: '/Screens/AnimaisDatailScreen' , params: {animaisId: selectedAnimal.id}})
+  }
+
   const closeModal = () => {
     setModalVisible(false);
   };
@@ -128,7 +133,7 @@ export default function AnimalsListScreen() {
   <ThemedView style={styles.container}>
 
         {animals.map(animal => 
-          <TouchableOpacity onPress={() => openEditModal(animal)}>
+          <TouchableOpacity onPress={() => navigateToDetails(animal)}>
              <Animais
             key={animal.id}
             name={animal.name}

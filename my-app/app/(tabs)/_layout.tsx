@@ -88,6 +88,15 @@ export default function TabLayout() {
                     ),
               }}
             />
+            <Tabs.Screen
+              name="UsuarioListScreen"
+              options={{
+                title: 'List User',
+                  tabBarIcon: ({ color }) => (
+                      <FontAwesome5 name="user" size={28} color={color} />
+                    ),
+              }}
+            />
     </Tabs>
   );
 }
